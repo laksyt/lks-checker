@@ -1,0 +1,3 @@
+= Aiven Candidate Homework: Checker
+
+Python micro-service that performs health-checks on a website and reports to a Kafka topic.
