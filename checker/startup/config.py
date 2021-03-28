@@ -34,7 +34,7 @@ class Config:
         self.profile = self._args.profile
 
         self._config = self._read_config_file(
-            self._profiles.get_config_filepath(
+            self._profiles.get_config_file_path(
                 self.profile
             )
         )
@@ -46,7 +46,7 @@ class Config:
         profiles_without_config = [
             profile.name
             for profile in self._profiles.Profile
-            if not os.path.isfile(self._profiles.get_config_filepath(profile))
+            if not os.path.isfile(self._profiles.get_config_file_path(profile))
         ]
         if profiles_without_config:
             raise RuntimeError(

@@ -2,6 +2,7 @@ import asyncio
 from asyncio import Future
 from asyncio.events import AbstractEventLoop
 
+from checker.logging import configure_logging
 from checker.startup.config import Config
 
 
@@ -18,6 +19,7 @@ class Application:
     counter = 0
 
     def __init__(self, config: Config):
+        configure_logging(config)
         self.config = config
         self._event_loop = asyncio.get_event_loop()
 

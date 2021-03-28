@@ -1,2 +1,5 @@
+log:
+  level: DEBUG
+
 test:
-  message: Running in local
+  message: Some

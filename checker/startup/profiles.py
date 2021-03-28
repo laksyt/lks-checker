@@ -43,6 +43,10 @@ class Profiles:
                 for profile_name in self._get_defined_profiles()
             }
         )
+        self.Profile.get_file_name \
+            = lambda profile: self.get_config_file_name(profile)
+        self.Profile.get_file_path \
+            = lambda profile: self.get_config_file_path(profile)
         self.Profile.__str__ = lambda item: item.value
 
     def _get_defined_profiles(self) -> list[str]:
@@ -82,12 +86,14 @@ class Profiles:
             if filename.endswith(suffix)
         ]
 
-    def get_config_filepath(self, profile: Profile):
+    def get_config_file_name(self, profile: Profile):
+        return f"{self.config_file_prefix}" \
+               f"{profile.value}" \
+               f"{self.config_file_suffix}"
+
+    def get_config_file_path(self, profile: Profile):
         return join(
-            self.config_dir,
-            f"{self.config_file_prefix}"
-            f"{profile.value}"
-            f"{self.config_file_suffix}"
+            self.config_dir, self.get_config_file_name(profile)
         )
 
     def get_by_name(self, name: str) -> Profile:

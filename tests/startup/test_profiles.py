@@ -69,7 +69,7 @@ class TestProfiles:
         profile = profiles.get_by_name('profile_name')
 
         # When
-        actual = profiles.get_config_filepath(profile)
+        actual = profiles.get_config_file_path(profile)
 
         # Then
         assert actual == join(tmpdir, test_file_name)
