@@ -3,7 +3,7 @@ from enum import Enum
 from os import listdir
 from os.path import isfile, join
 
-DEFAULT_PROFILE_NAME = 'local'
+DEFAULT_PROFILE_NAME = 'default'
 PROFILE_CONFIG_DIR_PATH = 'profiles'
 PROFILE_CONFIG_FILE_NAME_PREFIX = 'app-'
 PROFILE_CONFIG_FILE_NAME_SUFFIX = '.yml'
