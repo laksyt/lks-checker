@@ -61,10 +61,9 @@ class Args:
 
     def _get_active_profile(self):
         return self._parsed_args.profile \
-               or self._get_profile_from_env \
+               or self._get_profile_from_env() \
                or self._profiles.default
 
-    @property
     def _get_profile_from_env(self):
         env_var_value = os.getenv(PROFILE_ENV_VAR_NAME)
         if env_var_value is not None:
