@@ -1,9 +1,10 @@
 import argparse
 import os
 import sys
-from typing import Optional
 
-from checker.startup.profile import Profile
+from checker.startup.profiles import Profiles
+
+PROFILE_ENV_VAR_NAME = 'LAKSYT_PROFILE'
 
 
 class Args:
@@ -13,18 +14,25 @@ class Args:
     passed as a list of strings to the constructor.
     """
 
-    PROFILE_ENV_VAR_NAME = 'LAKSYT_ENV'
-
+    _profiles: Profiles = None
     _parser: argparse.ArgumentParser = None
     _parsed_args: argparse.Namespace = None
 
-    def __init__(self, cl_args: list[str] = None):
+    profile = None
+
+    def __init__(
+            self,
+            profiles: Profiles = Profiles(),
+            cl_args: list[str] = None
+    ):
+        self._profiles = profiles
         self._parser = self._build_parser()
         self._populate_args(self._parser)
         self._parsed_args = self._parse_args(
             self._parser,
             cl_args or sys.argv[1:]
         )
+        self.profile = self._get_active_profile()
 
     @staticmethod
     def _build_parser() -> argparse.ArgumentParser:
@@ -36,14 +44,13 @@ class Args:
             allow_abbrev=True
         )
 
-    @staticmethod
-    def _populate_args(parser: argparse.ArgumentParser) -> None:
+    def _populate_args(self, parser: argparse.ArgumentParser) -> None:
         parser.add_argument(
             '-p', '--profile',
             required=False,
-            type=Profile,
+            type=self._profiles.Profile,
             help="Name of runtime profile",
-            choices=[profile for profile in Profile]
+            choices=[profile for profile in self._profiles.Profile]
         )
 
     @staticmethod
@@ -52,21 +59,20 @@ class Args:
         parsed_args, _ = parser.parse_known_args(args)
         return parsed_args
 
-    @property
-    def profile(self) -> Profile:
+    def _get_active_profile(self):
         return self._parsed_args.profile \
-               or self._profile_from_env \
-               or Profile.default()
+               or self._get_profile_from_env \
+               or self._profiles.default
 
     @property
-    def _profile_from_env(self) -> Optional[Profile]:
-        env_var_value = os.getenv(Args.PROFILE_ENV_VAR_NAME)
+    def _get_profile_from_env(self):
+        env_var_value = os.getenv(PROFILE_ENV_VAR_NAME)
         if env_var_value is not None:
             try:
-                return Profile(env_var_value)
+                return self._profiles.get_by_name(env_var_value)
             except ValueError:
                 raise RuntimeError(
                     f"Unrecognized profile '{env_var_value}' given in"
-                    f" environment variable {Args.PROFILE_ENV_VAR_NAME}"
+                    f" environment variable {PROFILE_ENV_VAR_NAME}"
                 )
         return None

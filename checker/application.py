@@ -22,6 +22,7 @@ class Application:
         self._event_loop = asyncio.get_event_loop()
 
     def launch(self):
+        print(self.config["test"]["message"])
         loop = self._event_loop
         loop.call_later(5, self.stop)
         self._task = loop.create_task(self.periodic())
