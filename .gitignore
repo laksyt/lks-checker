@@ -1,3 +1,8 @@
+/profiles/app-local.yml
+/ca.pem
+/service.cert
+/service.key
+
 # Created by https://www.toptal.com/developers/gitignore/api/macos,windows,linux,visualstudiocode,intellij+all,python,vim,virtualenv,pycharm+all
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,windows,linux,visualstudiocode,intellij+all,python,vim,virtualenv,pycharm+all
 

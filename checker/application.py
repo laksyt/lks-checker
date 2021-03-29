@@ -1,45 +1,51 @@
 import asyncio
+import logging
 from asyncio import Future
-from asyncio.events import AbstractEventLoop
+from typing import Optional
 
+from checker.config.config import Config
+from checker.entities.http.schedule import get_schedule
+from checker.entities.http.targets import get_targets
+from checker.entities.kafka.producer import get_kafka_producer
+from checker.entities.kafka.topic import get_kafka_topic
 from checker.logging import configure_logging
-from checker.startup.config import Config
+from checker.tasks.checker import HealthChecker
+from checker.tasks.uptime import UptimeReporter
 
 
 class Application:
     """Main entrypoint into the application
 
-    Performs startup duties, bootstraps the application, and exposes methods to
+    Performs config duties, bootstraps the application, and exposes methods to
     launch the main process.
     """
 
-    config: Config = None
-    _event_loop: AbstractEventLoop = None
-    _task: Future = None
-    counter = 0
-
     def __init__(self, config: Config):
         configure_logging(config)
+        self.logger = logging.getLogger(__name__)
         self.config = config
-        self._event_loop = asyncio.get_event_loop()
+        self.loop = asyncio.get_event_loop()
+        self.task: Optional[Future] = None
+
+        self.uptime_reporter = UptimeReporter()
+        self.health_checker = HealthChecker(
+            get_targets(config),
+            get_schedule(config),
+            get_kafka_producer(config),
+            get_kafka_topic(config)
+        )
 
     def launch(self):
-        print(self.config["test"]["message"])
-        loop = self._event_loop
-        loop.call_later(5, self.stop)
-        self._task = loop.create_task(self.periodic())
+        self.task = self.loop.create_task(self._workload())
         try:
-            loop.run_until_complete(self._task)
+            self.loop.run_forever()
         except asyncio.CancelledError:
-            print("Cancelling")
+            self.logger.warning("Cancelling event loop")
         except KeyboardInterrupt:
-            print("Interrupting")
+            self.logger.warning("Interrupting event loop")
 
-    async def periodic(self):
-        while True:
-            self.counter += 1
-            print(f"Counting {self.counter}")
-            await asyncio.sleep(1)
-
-    def stop(self):
-        self._task.cancel()
+    async def _workload(self):
+        await asyncio.gather(
+            self.uptime_reporter.report_continuously(),
+            self.health_checker.check_continuously()
+        )

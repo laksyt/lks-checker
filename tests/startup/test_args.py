@@ -1,7 +1,7 @@
 import pytest
 
-from checker.startup.args import Args, PROFILE_ENV_VAR_NAME
-from checker.startup.profiles import Profiles
+from checker.config.args import Args, PROFILE_ENV_VAR_NAME
+from checker.config.profiles import Profiles
 from tests.startup.utilities import create_test_profiles
 
 

@@ -2,7 +2,7 @@ import argparse
 import os
 import sys
 
-from checker.startup.profiles import Profiles
+from checker.config.profiles import Profiles
 
 PROFILE_ENV_VAR_NAME = 'LAKSYT_PROFILE'
 

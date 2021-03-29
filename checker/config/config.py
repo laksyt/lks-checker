@@ -3,8 +3,8 @@ from os.path import join
 
 import yaml
 
-from checker.startup.args import Args
-from checker.startup.profiles import Profiles
+from checker.config.args import Args
+from checker.config.profiles import Profiles
 
 PROJECT_ROOT_DIR = join(os.path.dirname(__file__), os.pardir, os.pardir)
 

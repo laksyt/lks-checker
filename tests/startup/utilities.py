@@ -1,6 +1,6 @@
 import os
 
-from checker.startup.profiles import DEFAULT_PROFILE_NAME, PROFILE_CONFIG_FILE_NAME_PREFIX, \
+from checker.config.profiles import DEFAULT_PROFILE_NAME, PROFILE_CONFIG_FILE_NAME_PREFIX, \
     PROFILE_CONFIG_FILE_NAME_SUFFIX
 
 

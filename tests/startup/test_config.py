@@ -1,5 +1,5 @@
-from checker.startup.config import Config
-from checker.startup.profiles import DEFAULT_PROFILE_NAME, Profiles
+from checker.config.config import Config
+from checker.config.profiles import DEFAULT_PROFILE_NAME, Profiles
 from tests.startup.utilities import create_profile_config_file
 
 

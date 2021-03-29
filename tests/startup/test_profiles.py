@@ -2,7 +2,7 @@ from os.path import join
 
 import pytest
 
-from checker.startup.profiles import DEFAULT_PROFILE_NAME, Profiles
+from checker.config.profiles import DEFAULT_PROFILE_NAME, Profiles
 from tests.startup.utilities import create_config_file
 
 

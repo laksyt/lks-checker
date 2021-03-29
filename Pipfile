@@ -5,6 +5,9 @@ name = "pypi"
 
 [packages]
 pyyaml = "*"
+aiohttp = "*"
+kafka-python = "*"
+dataclasses-avroschema = "*"
 
 [dev-packages]
 pytest = "*"

@@ -1,5 +1,31 @@
 log:
-  level: DEBUG
+  level: INFO
 
-test:
-  message: Some
+checking:
+  schedule:
+    delay: 30
+    timeout: 5
+  targets:
+    - url: https://google.com
+      needle: Don't be evil
+    - url: https://google.com:81
+      needle: Just kidding
+    - url: https://this-site-does-not-exist.com
+      needle: Waldo
+    - url: https://nytimes.com
+      needle: Biden
+    - url: https://httpstat.us/404
+    - url: https://httpstat.us/503
+      needle: Service Unavailable
+    - url: https://httpstat.us/300
+      needle: Multiple Choices
+
+kafka:
+  producer:
+    bootstrap_servers: placeholder-kafka-server.aivencloud.com:22222
+    client_id: lks-checker
+    security_protocol: SSL
+    ssl_cafile: ca.pem
+    ssl_certfile: service.cert
+    ssl_keyfile: service.key
+  topic: placeholder-topic

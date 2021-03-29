@@ -1,7 +1,7 @@
 import logging
 import sys
 
-from checker.startup.config import Config
+from checker.config.config import Config
 
 LOG_FORMAT = '%(asctime)s.%(msecs)03d %(levelname)8.8s %(process)5s' \
              ' --- [%(threadName)15.15s] %(name)-24.24s: %(message)s'
@@ -9,11 +9,11 @@ LOF_DATEFMT = '%Y-%m-%d %H:%M:%S'
 
 
 def configure_logging(config: Config):
-    log_level = logging.getLevelName(get_log_config(config, 'level'))
+    log_level = logging.getLevelName(_get_log_config(config, 'level'))
 
     if str(log_level).startswith('Level '):
         raise RuntimeError(
-            f"Unrecognized log level '{get_log_config(config, 'level')}'"
+            f"Unrecognized log level '{_get_log_config(config, 'level')}'"
             f" in config file {config.profile.get_file_name()}"
         )
 
@@ -25,7 +25,7 @@ def configure_logging(config: Config):
     )
 
 
-def get_log_config(config: Config, key: str):
+def _get_log_config(config: Config, key: str):
     try:
         return config['log'][key]
     except KeyError:
