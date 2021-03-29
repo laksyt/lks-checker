@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-from checker.config.config import Config
+from laksyt.config.config import Config
 
 Schedule = namedtuple('Schedule', ['delay', 'timeout'])
 

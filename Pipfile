@@ -8,6 +8,7 @@ pyyaml = "*"
 aiohttp = "*"
 kafka-python = "*"
 dataclasses-avroschema = "*"
+avro = "*"
 
 [dev-packages]
 pytest = "*"

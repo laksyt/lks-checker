@@ -8,5 +8,5 @@ The application can be built and run with Docker as such:
 
 [source,bash]
 ----
-docker build -t laksyt/lks-checker:latest . && docker run -it --rm laksyt/lks-checker:latest
+docker build -t laksyt/lks-laksyt:latest . && docker run -it --rm laksyt/lks-laksyt:latest
 ----

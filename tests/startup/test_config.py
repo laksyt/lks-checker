@@ -1,5 +1,5 @@
-from checker.config.config import Config
-from checker.config.profiles import DEFAULT_PROFILE_NAME, Profiles
+from laksyt.config.config import Config
+from laksyt.config.profiles import DEFAULT_PROFILE_NAME, Profiles
 from tests.startup.utilities import create_profile_config_file
 
 

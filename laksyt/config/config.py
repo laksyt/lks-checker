@@ -3,8 +3,8 @@ from os.path import join
 
 import yaml
 
-from checker.config.args import Args
-from checker.config.profiles import Profiles
+from laksyt.config.args import Args
+from laksyt.config.profiles import Profiles
 
 PROJECT_ROOT_DIR = join(os.path.dirname(__file__), os.pardir, os.pardir)
 

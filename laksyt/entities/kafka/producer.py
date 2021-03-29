@@ -1,6 +1,6 @@
 from kafka import KafkaProducer
 
-from checker.config.config import Config
+from laksyt.config.config import Config
 
 
 def get_kafka_producer(config: Config) -> KafkaProducer:

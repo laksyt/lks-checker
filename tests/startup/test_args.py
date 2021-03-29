@@ -1,7 +1,7 @@
 import pytest
 
-from checker.config.args import Args, PROFILE_ENV_VAR_NAME
-from checker.config.profiles import Profiles
+from laksyt.config.args import Args, PROFILE_ENV_VAR_NAME
+from laksyt.config.profiles import Profiles
 from tests.startup.utilities import create_test_profiles
 
 

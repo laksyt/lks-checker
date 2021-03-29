@@ -3,7 +3,7 @@ from typing import Optional
 
 from dataclasses_avroschema import AvroModel
 
-from checker.config.config import Config
+from laksyt.config.config import Config
 
 
 @dataclass

@@ -1,22 +1,27 @@
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 from aiohttp import ClientError, ClientResponse
 from dataclasses_avroschema import AvroModel
 
-from checker.entities.http.targets import Target
+from laksyt.entities.target import Target
+
+
+def _utcnow_truncated():
+    ts = datetime.now(tz=timezone.utc)
+    return ts.replace(microsecond=int(f"{str(ts.microsecond)[:3]}000"))
 
 
 @dataclass
 class HealthReport(AvroModel):
     target: Target
-    status: str
     is_available: bool
+    status: str
     status_code: Optional[int] = None
     response_time: Optional[float] = None
     needle_found: Optional[bool] = None
-    checked_at: datetime = field(default_factory=datetime.utcnow, init=False)
+    checked_at: datetime = field(default_factory=_utcnow_truncated, init=False)
 
 
 def compose_success_report(
@@ -26,7 +31,7 @@ def compose_success_report(
 ) -> HealthReport:
     return HealthReport(
         target=target,
-        status=map_code_to_hr_status(response.status),
+        status=map_code_to_status(response.status),
         is_available=True,
         status_code=response.status,
         response_time=response.time,
@@ -58,10 +63,16 @@ def compose_timeout_report(
     )
 
 
-def map_code_to_hr_status(http_code: int):
-    if 200 <= http_code <= 299:
+def map_code_to_status(http_code: int):
+    if 100 <= http_code <= 199:
+        return 'INFO'
+    elif 200 <= http_code <= 299:
         return 'SUCCESS'
-    elif 400 <= http_code <= 599:
-        return 'ERROR'
+    elif 300 <= http_code <= 399:
+        return 'REDIRECT'
+    elif 400 <= http_code <= 499:
+        return 'CLIENT_ERROR'
+    elif 500 <= http_code <= 599:
+        return 'SERVER_ERROR'
     else:
         return 'OTHER'

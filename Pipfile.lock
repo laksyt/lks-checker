@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "d7f71ed634efc80b57c78679836c6bf68d69385faad1fd9e4624e6aab2a08884"
+            "sha256": "bca8b03fc1e6293021a6f26df0c82429dbc794fb4c0a61b279c30eadb0faaad9"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -75,6 +75,13 @@
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
             "version": "==20.3.0"
         },
+        "avro": {
+            "hashes": [
+                "sha256:381b990cc4c4444743c3297348ffd46e0c3a5d7a17e15b2f4a9042f6e955c31a"
+            ],
+            "index": "pypi",
+            "version": "==1.10.2"
+        },
         "chardet": {
             "hashes": [
                 "sha256:0d6f53a15db4120f2b08c94f11e7d93d2c911ee118b6b30a04ec3ee8310179fa",
@@ -100,11 +107,11 @@
         },
         "faker": {
             "hashes": [
-                "sha256:579348fac4597cf5c998f10e3b840b48d85157413cb501809f98a83eb228e907",
-                "sha256:c2852cadc99a4ebdbf06934e4c15e30f2307d414ead21d15605759602645f152"
+                "sha256:2aa5112139fba8b088f6c6a71dc06ab27dcad882d130eecacde4524425604f7f",
+                "sha256:a9b79f407a0bd2f45f7c5638c101aba356854520a7413938e96cc4b876d59e88"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==6.6.3"
+            "version": "==7.0.0"
         },
         "fastavro": {
             "hashes": [

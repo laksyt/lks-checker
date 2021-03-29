@@ -3,8 +3,8 @@ log:
 
 checking:
   schedule:
-    delay: 30
-    timeout: 5
+    delay: 5
+    timeout: 3
   targets:
     - url: https://google.com
       needle: Don't be evil

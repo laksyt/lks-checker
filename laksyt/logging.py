@@ -1,7 +1,7 @@
 import logging
 import sys
 
-from checker.config.config import Config
+from laksyt.config.config import Config
 
 LOG_FORMAT = '%(asctime)s.%(msecs)03d %(levelname)8.8s %(process)5s' \
              ' --- [%(threadName)15.15s] %(name)-24.24s: %(message)s'

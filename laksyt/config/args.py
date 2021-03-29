@@ -2,7 +2,7 @@ import argparse
 import os
 import sys
 
-from checker.config.profiles import Profiles
+from laksyt.config.profiles import Profiles
 
 PROFILE_ENV_VAR_NAME = 'LAKSYT_PROFILE'
 
@@ -37,7 +37,7 @@ class Args:
     @staticmethod
     def _build_parser() -> argparse.ArgumentParser:
         return argparse.ArgumentParser(
-            prog="lks-checker",
+            prog="lks-laksyt",
             description="Python micro-service that performs health-checks"
                         " on a website and reports to a Kafka topic.",
             epilog="Written by Erik Sargazakov.",

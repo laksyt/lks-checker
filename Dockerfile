@@ -13,7 +13,7 @@ COPY Pipfile.lock   Pipfile.lock
 RUN /home/lks/.local/bin/pipenv install --deploy --ignore-pipfile
 
 COPY main.py        main.py
-COPY checker/       checker/
+COPY laksyt/       checker/
 COPY profiles/      profiles/
 
 ENV LAKSYT_ENV prod

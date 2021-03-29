@@ -3,14 +3,14 @@ import logging
 from asyncio import Future
 from typing import Optional
 
-from checker.config.config import Config
-from checker.entities.http.schedule import get_schedule
-from checker.entities.http.targets import get_targets
-from checker.entities.kafka.producer import get_kafka_producer
-from checker.entities.kafka.topic import get_kafka_topic
-from checker.logging import configure_logging
-from checker.tasks.checker import HealthChecker
-from checker.tasks.uptime import UptimeReporter
+from laksyt.config.config import Config
+from laksyt.entities.http.schedule import get_schedule
+from laksyt.entities.kafka.producer import get_kafka_producer
+from laksyt.entities.kafka.topic import get_kafka_topic
+from laksyt.entities.target import get_targets
+from laksyt.logging import configure_logging
+from laksyt.tasks.checker import HealthChecker
+from laksyt.tasks.uptime import UptimeReporter
 
 
 class Application:
@@ -25,7 +25,6 @@ class Application:
         self.logger = logging.getLogger(__name__)
         self.config = config
         self.loop = asyncio.get_event_loop()
-        self.task: Optional[Future] = None
 
         self.uptime_reporter = UptimeReporter()
         self.health_checker = HealthChecker(
@@ -36,7 +35,7 @@ class Application:
         )
 
     def launch(self):
-        self.task = self.loop.create_task(self._workload())
+        self.loop.create_task(self._workload())
         try:
             self.loop.run_forever()
         except asyncio.CancelledError:

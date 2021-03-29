@@ -6,10 +6,10 @@ from aiohttp import ClientError, ClientSession, ClientTimeout, TraceConfig
 from kafka import KafkaProducer
 from kafka.errors import KafkaError
 
-from checker.entities.http.schedule import Schedule
-from checker.entities.http.targets import Target
-from checker.entities.http.timer import create_request_timer
-from checker.entities.report import HealthReport, compose_failure_report, compose_success_report, compose_timeout_report
+from laksyt.entities.http.schedule import Schedule
+from laksyt.entities.http.timer import create_request_timer
+from laksyt.entities.report import HealthReport, compose_failure_report, compose_success_report, compose_timeout_report
+from laksyt.entities.target import Target
 
 logger = logging.getLogger(__name__)
 
@@ -53,9 +53,7 @@ class HealthChecker:
         """Sends request to a given Target and generates HealthReport."""
         report = await self._do_health_check(target, session)
         if report:
-            await self._do_send_report(
-                report, self._kafka_producer, self._kafka_topic
-            )
+            await self._do_send(report)
 
     async def _do_health_check(self, target: Target, session: ClientSession) \
             -> HealthReport:
@@ -74,18 +72,15 @@ class HealthChecker:
                 f" on {target}"
             )
         if report:
-            logger.info(f"Health checked: {report.status:>11.11}, {report}")
+            logger.info(f"Health checked: {report.status:>12.12}, {report}")
         else:
             logger.error(f"Failed to generate health report for {target}")
         return report
 
-    @staticmethod
-    async def _do_send_report(
-            report: HealthReport,
-            kafka_producer: KafkaProducer,
-            kafka_topic: str
-    ) -> bool:
+    async def _do_send(self, report: HealthReport) -> bool:
         enqueued = False
+        kafka_producer = self._kafka_producer
+        kafka_topic = self._kafka_topic
         try:
             kafka_producer.send(kafka_topic, report.serialize())
             enqueued = True
