@@ -2,6 +2,7 @@ import os
 from os.path import join
 
 import yaml
+from yaml.parser import ParserError
 
 from laksyt.config.args import Args
 from laksyt.config.profiles import Profiles
@@ -62,4 +63,8 @@ class Config:
         except IOError:
             raise RuntimeError(
                 f"Unable to read config file: {config_filepath}"
+            )
+        except ParserError:
+            raise RuntimeError(
+                f"Unable to parse config file: {config_filepath}"
             )

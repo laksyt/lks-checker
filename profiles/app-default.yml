@@ -13,12 +13,13 @@ checking:
     - url: https://this-site-does-not-exist.com
       needle: Waldo
     - url: https://nytimes.com
-      needle: Biden
+      needle: 'world|peace'
     - url: https://httpstat.us/404
+      needle:
     - url: https://httpstat.us/503
-      needle: Service Unavailable
+      needle: '([Uu]n)?available'
     - url: https://httpstat.us/300
-      needle: Multiple Choices
+      needle: '(Multiple|Singular) Choices?'
 
 kafka:
   producer:

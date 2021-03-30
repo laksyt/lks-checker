@@ -1,7 +1,5 @@
 import asyncio
 import logging
-from asyncio import Future
-from typing import Optional
 
 from laksyt.config.config import Config
 from laksyt.entities.http.schedule import get_schedule

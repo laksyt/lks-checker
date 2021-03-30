@@ -27,7 +27,7 @@ class HealthReport(AvroModel):
 def compose_success_report(
         target: Target,
         response: ClientResponse,
-        html: str
+        needle_found: Optional[bool]
 ) -> HealthReport:
     return HealthReport(
         target=target,
@@ -35,7 +35,7 @@ def compose_success_report(
         is_available=True,
         status_code=response.status,
         response_time=response.time,
-        needle_found=target.needle in html if target.needle else None
+        needle_found=needle_found
     )
 
 

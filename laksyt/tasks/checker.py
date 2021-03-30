@@ -9,7 +9,7 @@ from kafka.errors import KafkaError
 from laksyt.entities.http.schedule import Schedule
 from laksyt.entities.http.timer import create_request_timer
 from laksyt.entities.report import HealthReport, compose_failure_report, compose_success_report, compose_timeout_report
-from laksyt.entities.target import Target
+from laksyt.entities.target import TargetWrapper
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +18,7 @@ class HealthChecker:
 
     def __init__(
             self,
-            targets: tuple[Target],
+            targets: tuple[TargetWrapper],
             schedule: Schedule,
             kafka_producer: KafkaProducer,
             kafka_topic: str
@@ -49,19 +49,26 @@ class HealthChecker:
             timeout=ClientTimeout(total=self._schedule.timeout)
         )
 
-    async def _check_target(self, target: Target, session: ClientSession):
-        """Sends request to a given Target and generates HealthReport."""
+    async def _check_target(
+            self,
+            target: TargetWrapper,
+            session: ClientSession
+    ) -> None:
         report = await self._do_health_check(target, session)
         if report:
             await self._do_send(report)
 
-    async def _do_health_check(self, target: Target, session: ClientSession) \
-            -> HealthReport:
+    async def _do_health_check(
+            self,
+            target: TargetWrapper,
+            session: ClientSession
+    ) -> HealthReport:
         report = None
+        target, matcher = target.target, target.needle_is_in
         try:
             response = await session.request(method="GET", url=target.url)
             html = await response.text()
-            report = compose_success_report(target, response, html)
+            report = compose_success_report(target, response, matcher(html))
         except ClientError as error:
             report = compose_failure_report(target, error)
         except TimeoutError:
