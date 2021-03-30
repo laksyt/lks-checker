@@ -31,10 +31,10 @@ class HealthChecker:
 
     async def check_continuously(self):
         while True:
-            await self._check()
+            await self.check_once()
             await asyncio.sleep(self._schedule.delay)
 
-    async def _check(self):
+    async def check_once(self):
         async with self._create_session() as session:
             tasks = []
             for target in self._targets:
