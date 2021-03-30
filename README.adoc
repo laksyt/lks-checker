@@ -1,12 +1,63 @@
-= Aiven Candidate Homework: Checker
+= Läksyt: Checker
+:doctype: article
+:toc: macro
 
-Python micro-service that performs health-checks on a website and reports to a Kafka topic.
+++++
+<p align="center">
+<em>‘Läksyt’ is plural for ‘homework’ in Finnish<br>(according to <a href="https://translate.google.com/?sl=fi&tl=en&text=l%C3%A4ksyt&op=translate">Google Translate</a>)</em>
+</p>
+++++
 
-== Running with Docker
+A Python micro-service that periodically health-checks a list of websites, optionally searching for a regex pattern in returned HTML, then sends the resulting health reports in Avro format to a Kafka topic.
 
-The application can be built and run with Docker as such:
+toc::[]
 
-[source,bash]
+== Configure
+
+All configuration resides in the file `profiles/app-default.yml`.
+At the minimum, this application requires connection credentials to a Kafka instance, and a topic name to post to.
+Other preferences are set to reasonable defaults and should prove intuitive to tinker with.
+
+The application supports multiple configuration profiles: just add a file `profiles/app-<PROFILE_NAME>.yml` for each additional profile.
+(The profile `default` must always be present, as it is, well, the default.)
+To select the active profile:
+
+* Set the environment variable `LAKSYT_PROFILE` to the value `<PROFILE_NAME>`.
+* Or, add the command line option `--profile <PROFILE_NAME>`/`-p <PROFILE_NAME>` to the `python` command when launching the application.
+* Otherwise, the `default` profile will be used.
+
+The profile name given in the command line overrides the profile from the environment variable.
+
+== Run
+
+=== Run with `pipenv`
+
+To run the application with `pipenv`, first install the dependencies:
+
+[source]
 ----
-docker build -t laksyt/lks-laksyt:latest . && docker run -it --rm laksyt/lks-laksyt:latest
+pipenv install --deploy --ignore-pipfile
+----
+
+Then run the application:
+
+[source]
+----
+pipenv run python main.py [--profile <PROFILE_NAME>]
+----
+
+=== Run with Docker
+
+To run the application with Docker, first build the image:
+
+[source]
+----
+docker build -t laksyt/lks-checker:latest .
+----
+
+Then run the application:
+
+[source]
+----
+docker run -it --rm [-e LAKSYT_PROFILE='<PROFILE_NAME>'] laksyt/lks-checker:latest
 ----
