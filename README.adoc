@@ -43,8 +43,10 @@ Then run the application:
 
 [source]
 ----
-pipenv run python main.py [--profile <PROFILE_NAME>]
+pipenv run python main.py
 ----
+
+To select a non-default profile, append `-p <PROFILE_NAME>` to the `pipenv run` command.
 
 === Run with Docker
 
@@ -59,8 +61,10 @@ Then run the application:
 
 [source]
 ----
-docker run -it --rm [-e LAKSYT_PROFILE='<PROFILE_NAME>'] laksyt/lks-checker:latest
+docker run -it --rm laksyt/lks-checker:latest
 ----
+
+To select a non-default profile, append `-e LAKSYT_PROFILE=<PROFILE_NAME>` to the `docker run` options.
 
 == While running
 
