@@ -1,30 +1,16 @@
+"""Extracts and validates Kafka producer parameters from the application config
+file for the active profile, then constructs and returns the producer object
+"""
+
 from kafka import KafkaProducer
 
 from laksyt.config.config import Config
 
 
-def get_kafka_producer(
-        config: Config,
-        handle_kafka_exc=True
-) -> KafkaProducer:
-    try:
-        kafka_dict: dict = config['kafka']['producer']
-    except KeyError:
-        raise RuntimeError(
-            "Missing key 'kafka.producer'"
-            f" in config file {config.profile.get_file_name()}"
-        )
-    if not kafka_dict:
-        raise RuntimeError(
-            "Empty key 'kafka.producer'"
-            f" in config file {config.profile.get_file_name()}"
-        )
-    try:
-        return KafkaProducer(**kafka_dict)
-    except Exception:
-        if handle_kafka_exc:
-            raise RuntimeError(
-                "Failed to construct KafkaProducer"
-                " from values in key 'kafka.producer'"
-                f" in config file {config.profile.get_file_name()}"
-            )
+def get_kafka_producer(config: Config) -> KafkaProducer:
+    return config.extract_config_value(
+        ('kafka', 'producer'),
+        lambda x: x is not None and isinstance(x, dict),
+        lambda x: KafkaProducer(**x),
+        "dict with fields for KafkaProducer constructor"
+    )

@@ -1,3 +1,11 @@
+"""Defines an abstraction for storing scheduling configuration
+
+delay (int): Duration in seconds between the end of a round of health checks
+    and the beginning of the next one.
+timeout (int): Duration in seconds to wait for a response from a website before
+    considering it unavailable.
+"""
+
 from collections import namedtuple
 
 from laksyt.config.config import Config
@@ -6,36 +14,22 @@ Schedule = namedtuple('Schedule', ['delay', 'timeout'])
 
 
 def get_schedule(config: Config) -> Schedule:
-    try:
-        unparsed = config['checking']['schedule']
-    except KeyError:
-        raise RuntimeError(
-            "Missing key 'checking.schedule'"
-            f" in config file {config.profile.get_file_name()}"
-        )
-    if not unparsed:
-        raise RuntimeError(
-            "Empty key 'checking.schedule'"
-            f" in config file {config.profile.get_file_name()}"
-        )
-    field_names = "'%s'" % "', '".join(field for field in Schedule._fields)
-    error_msg = "Key 'checking.schedule'" \
-                f" does not have all required fields ({field_names})" \
-                f" in config file {config.profile.get_file_name()}"
-    if not isinstance(unparsed, dict):
-        raise RuntimeError(error_msg)
-    try:
-        schedule = Schedule(**unparsed)
-    except (ValueError, TypeError):
-        raise RuntimeError(error_msg)
-    if not isinstance(schedule.delay, int) or not 5 <= schedule.delay <= 3600:
-        raise RuntimeError(
-            "Key 'checking.schedule.delay' must be an int in range [5, 3600]"
-            f" in config file {config.profile.get_file_name()}"
-        )
-    if not isinstance(schedule.timeout, int) or not 0 < schedule.timeout <= 60:
-        raise RuntimeError(
-            "Key 'checking.schedule.timeout' must be an int in range (0, 60]"
-            f" in config file {config.profile.get_file_name()}"
-        )
-    return schedule
+    """Extracts and validates scheduling parameters from the application config
+    file for the active profile
+    """
+    checking_delay = config.extract_config_value(
+        ('checking', 'schedule', 'delay'),
+        lambda x: x is not None and isinstance(x, int) and 5 <= x <= 3600,
+        lambda x: x,
+        'int in range [5,3600]'
+    )
+    checking_timeout = config.extract_config_value(
+        ('checking', 'schedule', 'timeout'),
+        lambda x: x is not None and isinstance(x, int) and 0 < x <= 60,
+        lambda x: x,
+        'int in range (0,60]'
+    )
+    return Schedule(
+        delay=checking_delay,
+        timeout=checking_timeout
+    )

@@ -15,6 +15,11 @@ logger = logging.getLogger(__name__)
 
 
 class HealthChecker:
+    """Main asynchronous workload
+
+    Periodically launches a round of health checks against the configured
+    targets, composes reports, and enqueues them onto a Kafka topic
+    """
 
     def __init__(
             self,
@@ -30,11 +35,13 @@ class HealthChecker:
         self._request_timer: TraceConfig = create_request_timer()
 
     async def check_continuously(self):
+        """Repeatedly (with delay) performs rounds of health checks"""
         while True:
             await self.check_once()
             await asyncio.sleep(self._schedule.delay)
 
     async def check_once(self):
+        """Performs single round of health checks against all targets"""
         async with self._create_session() as session:
             tasks = []
             for target in self._targets:
@@ -44,6 +51,7 @@ class HealthChecker:
             await asyncio.gather(*tasks)
 
     def _create_session(self) -> ClientSession:
+        """Instantiates an aiohttp client session"""
         return ClientSession(
             trace_configs=[self._request_timer],
             timeout=ClientTimeout(total=self._schedule.timeout)
@@ -54,6 +62,9 @@ class HealthChecker:
             target: TargetWrapper,
             session: ClientSession
     ) -> None:
+        """Performs health check against a single target and sends report to
+        Kafka topic
+        """
         report = await self._do_health_check(target, session)
         if report:
             await self._do_send(report)
@@ -63,6 +74,7 @@ class HealthChecker:
             target: TargetWrapper,
             session: ClientSession
     ) -> HealthReport:
+        """Performs health check against a single target and returns report"""
         report = None
         target, matcher = target.target, target.needle_is_in
         try:
@@ -85,6 +97,10 @@ class HealthChecker:
         return report
 
     async def _do_send(self, report: HealthReport) -> bool:
+        """Sends given health check report to Kafka topic, returns whether
+        report was accepted by Kafka producer (does not guarantee sending and
+        delivery)
+        """
         enqueued = False
         kafka_producer = self._kafka_producer
         kafka_topic = self._kafka_topic

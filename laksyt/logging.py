@@ -1,3 +1,5 @@
+"""Configures application logging (duh)"""
+
 import logging
 import sys
 

@@ -25,6 +25,7 @@ class Args:
             profiles: Profiles = Profiles(),
             cl_args: list[str] = None
     ):
+        """Takes detected profiles, orchestrates parsing of CL arguments"""
         self._profiles = profiles
         self._parser = self._build_parser()
         self._populate_args(self._parser)
@@ -60,11 +61,13 @@ class Args:
         return parsed_args
 
     def _get_active_profile(self):
+        """Defines precedence order for ways to select active profile"""
         return self._parsed_args.profile \
                or self._get_profile_from_env() \
                or self._profiles.default
 
     def _get_profile_from_env(self):
+        """Reads active profile from environment variable"""
         env_var_value = os.getenv(PROFILE_ENV_VAR_NAME)
         if env_var_value is not None:
             try:

@@ -1,3 +1,7 @@
+"""Constructs a custom tracing object specific to aiohttp, which is used to
+measure the duration of an HTTP request
+"""
+
 import asyncio
 from types import SimpleNamespace
 

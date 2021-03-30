@@ -6,8 +6,10 @@ logger = logging.getLogger(__name__)
 
 
 class UptimeReporter:
+    """Asynchronous workload to periodically report uptime into log"""
 
     def __init__(self, period: int = 60):
+        """Sets up uptime reporting period in seconds"""
         self.period = period
         self.seconds_up = 0.0
         self.uptime = timedelta(seconds=self.seconds_up)

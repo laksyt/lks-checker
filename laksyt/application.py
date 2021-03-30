@@ -12,13 +12,14 @@ from laksyt.tasks.uptime import UptimeReporter
 
 
 class Application:
-    """Main entrypoint into the application
+    """Main class of the application
 
-    Performs config duties, bootstraps the application, and exposes methods to
-    launch the main process.
+    With a given configuration, sets up logging, retrieves event loop, and
+    deploys long-running tasks into it.
     """
 
     def __init__(self, config: Config):
+        """Configures application, prepares tasks"""
         configure_logging(config)
         self.logger = logging.getLogger(__name__)
         self.config = config
@@ -33,6 +34,7 @@ class Application:
         )
 
     def launch(self):
+        """Kicks off the main workload"""
         self.loop.create_task(self._workload())
         try:
             self.loop.run_forever()
@@ -42,6 +44,7 @@ class Application:
             self.logger.warning("Interrupting event loop")
 
     async def _workload(self):
+        """Groups long-running asynchronous tasks into a single workload"""
         await asyncio.gather(
             self.uptime_reporter.report_continuously(),
             self.health_checker.check_continuously()

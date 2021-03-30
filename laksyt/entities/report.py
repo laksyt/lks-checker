@@ -1,3 +1,17 @@
+"""Abstraction for health check report, to be reconstructed from Avro messages
+polled from Kafka topic. SQL query template is defined here to be used for
+persisting the instances in a PostgreSQL database.
+
+target (Target): Website to check and regex to search for.
+is_available (bool): Whether a response was received.
+status (str): Human-readable description of health check result.
+status_code (int): HTTP response code (if it was received).
+response_time (float): Number of seconds that request took.
+needle_found (bool): Whether given regex matched anywhere in page HTML (if
+    there was a response at all).
+checked_at (datetime): Timestamp (in UTC) when health check was completed.
+"""
+
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Optional
@@ -9,6 +23,10 @@ from laksyt.entities.target import Target
 
 
 def _utcnow_truncated():
+    """Generates timestamp in UTC, with timezone attached to returned object,
+    and with microsecond value truncated to 3 digits, all to ensure that
+    reconstructed object is identical to the original
+    """
     ts = datetime.now(tz=timezone.utc)
     return ts.replace(microsecond=int(f"{str(ts.microsecond)[:3]}000"))
 
@@ -29,6 +47,7 @@ def compose_success_report(
         response: ClientResponse,
         needle_found: Optional[bool]
 ) -> HealthReport:
+    """Convenience factory for successful health check report"""
     return HealthReport(
         target=target,
         status=map_code_to_status(response.status),
@@ -43,6 +62,7 @@ def compose_failure_report(
         target: Target,
         error: ClientError
 ) -> HealthReport:
+    """Convenience factory for failed health check report"""
     return HealthReport(
         target=target,
         status='UNAVAILABLE',
@@ -55,6 +75,7 @@ def compose_timeout_report(
         target: Target,
         timeout_secs: int
 ) -> HealthReport:
+    """Convenience factory for timed out health check report"""
     return HealthReport(
         target=target,
         status='TIMEOUT',
@@ -64,6 +85,7 @@ def compose_timeout_report(
 
 
 def map_code_to_status(http_code: int):
+    """Maps HTTP code to human-readable descriptive string"""
     if 100 <= http_code <= 199:
         return 'INFO'
     elif 200 <= http_code <= 299:

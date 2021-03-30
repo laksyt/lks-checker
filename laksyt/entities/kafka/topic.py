@@ -1,17 +1,12 @@
+"""Extracts and validates name of Kafka topic to post health reports into"""
+
 from laksyt.config.config import Config
 
 
 def get_kafka_topic(config: Config) -> str:
-    try:
-        topic = config['kafka']['topic']
-    except KeyError:
-        raise RuntimeError(
-            "Missing key 'kafka.topic'"
-            f" in config file {config.profile.get_file_name()}"
-        )
-    if not isinstance(topic, str):
-        raise RuntimeError(
-            "Key 'kafka.topic' should be string"
-            f" in config file {config.profile.get_file_name()}"
-        )
-    return topic
+    return config.extract_config_value(
+        ('kafka', 'topic'),
+        lambda x: x is not None and isinstance(x, str),
+        lambda x: x,
+        'str'
+    )

@@ -3,9 +3,9 @@ log:
 
 checking:
   schedule:
-    delay: 5
-    timeout: 3
-  targets:
+    delay: 5  # seconds after last health check round ends before next one starts
+    timeout: 3  # health check HTTP request timeout
+  targets: # sites to health check, and optional regex patterns to search for in their HTML
     - url: https://google.com
       needle: Don't be evil
     - url: https://google.com:81
@@ -22,11 +22,11 @@ checking:
       needle: '(Multiple|Singular) Choices?'
 
 kafka:
-  producer:
+  producer: # Kafka producer client configuration
     bootstrap_servers: PLACEHOLDER.aivencloud.com:PLACEHOLDER
     client_id: lks-checker
     security_protocol: SSL
     ssl_cafile: ca.pem
     ssl_certfile: service.cert
     ssl_keyfile: service.key
-  topic: PLACEHOLDER
+  topic: PLACEHOLDER  # Kafka topic to post messages to
