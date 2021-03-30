@@ -4,7 +4,7 @@ log:
 checking:
   schedule:
     delay: 5  # seconds after last health check round ends before next one starts
-    timeout: 3  # health check HTTP request timeout
+    timeout: 3  # health check HTTP request timeout in seconds
   targets: # sites to health check, and optional regex patterns to search for in their HTML
     - url: https://google.com
       needle: Don't be evil
