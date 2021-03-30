@@ -11,27 +11,18 @@ LOF_DATEFMT = '%Y-%m-%d %H:%M:%S'
 
 
 def configure_logging(config: Config):
-    log_level = logging.getLevelName(_get_log_config(config, 'level'))
-
-    if str(log_level).startswith('Level '):
-        raise RuntimeError(
-            f"Unrecognized log level '{_get_log_config(config, 'level')}'"
-            f" in config file {config.profile.get_file_name()}"
-        )
+    log_level = config.extract_config_value(
+        ('log', 'level'),
+        lambda x: x is not None and isinstance(x, str) and x in (
+            'CRITICAL', 'ERROR', 'WARNING', 'WARN', 'INFO', 'DEBUG', 'NOTSET'
+        ),
+        lambda x: x,
+        'any of: CRITICAL, ERROR, WARNING, WARN, INFO, DEBUG, NOTSET'
+    )
 
     logging.basicConfig(
         format=LOG_FORMAT,
-        level=log_level,
+        level=logging.getLevelName(log_level),
         datefmt=LOF_DATEFMT,
         stream=sys.stderr
     )
-
-
-def _get_log_config(config: Config, key: str):
-    try:
-        return config['log'][key]
-    except KeyError:
-        raise RuntimeError(
-            f"Unable to find config key 'log.{key}'"
-            f" in config file {config.profile.file_path}"
-        )
