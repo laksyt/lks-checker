@@ -12,10 +12,11 @@ COPY Pipfile.lock   Pipfile.lock
 
 RUN /home/lks/.local/bin/pipenv install --deploy --ignore-pipfile
 
-COPY main.py        main.py
-COPY laksyt/       checker/
-COPY profiles/      profiles/
+COPY main.py                            main.py
+COPY laksyt/                            laksyt/
+COPY profiles/                          profiles/
+COPY ca.pem service.cert service.key    ./
 
-ENV LAKSYT_ENV prod
+ENV LAKSYT_PROFILE default
 
 ENTRYPOINT ["/home/lks/.local/bin/pipenv", "run", "python", "main.py"]
