@@ -19,7 +19,7 @@ At the minimum, this application requires connection credentials to a Kafka inst
 Other preferences are set to reasonable defaults and should prove intuitive to tinker with.
 
 The application supports multiple configuration profiles: just add a file `profiles/app-<PROFILE_NAME>.yml` for each additional profile.
-(The profile `default` must always be present, as it is, well, the default.)
+(The profile `default` must always be present as it is, well, the default.)
 To select the active profile:
 
 * Set the environment variable `LAKSYT_PROFILE` to the value `<PROFILE_NAME>`.
@@ -61,3 +61,8 @@ Then run the application:
 ----
 docker run -it --rm [-e LAKSYT_PROFILE='<PROFILE_NAME>'] laksyt/lks-checker:latest
 ----
+
+== While running
+
+The application documents its normal activities into the standard error at the `INFO` level (which is configurable).
+To stop the execution, just send a `Ctrl-C`.
