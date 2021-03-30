@@ -22,10 +22,10 @@ checking:
 
 kafka:
   producer:
-    bootstrap_servers: placeholder-kafka-server.aivencloud.com:22222
+    bootstrap_servers: PLACEHOLDER.aivencloud.com:PLACEHOLDER
     client_id: lks-checker
     security_protocol: SSL
     ssl_cafile: ca.pem
     ssl_certfile: service.cert
     ssl_keyfile: service.key
-  topic: placeholder-topic
+  topic: PLACEHOLDER
