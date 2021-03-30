@@ -8,11 +8,12 @@ pyyaml = "*"
 aiohttp = "*"
 kafka-python = "*"
 dataclasses-avroschema = "*"
-pytest-asyncio = "*"
-pytest-aiohttp = "*"
 
 [dev-packages]
 pytest = "*"
+pytest-asyncio = "*"
+pytest-aiohttp = "*"
+pytest-mock = "*"
 
 [requires]
 python_version = "3.9"

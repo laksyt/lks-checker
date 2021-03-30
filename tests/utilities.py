@@ -20,6 +20,16 @@ def create_profile_config_file(dir_path: str, profile_name: str, content=None):
     )
 
 
+def create_default_profile_config_file(dir_path: str, content=None):
+    create_config_file(
+        dir_path,
+        f"{PROFILE_CONFIG_FILE_NAME_PREFIX}"
+        f"{DEFAULT_PROFILE_NAME}"
+        f"{PROFILE_CONFIG_FILE_NAME_SUFFIX}",
+        content
+    )
+
+
 def create_test_profiles(dir_path: str):
     create_profile_config_file(dir_path, DEFAULT_PROFILE_NAME)
     create_profile_config_file(dir_path, 'prod')

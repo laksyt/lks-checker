@@ -3,7 +3,7 @@ from os.path import join
 import pytest
 
 from laksyt.config.profiles import DEFAULT_PROFILE_NAME, Profiles
-from tests.config.utilities import create_config_file
+from tests.utilities import create_config_file
 
 
 class TestProfiles:

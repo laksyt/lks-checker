@@ -2,7 +2,7 @@ import pytest
 
 from laksyt.config.args import Args, PROFILE_ENV_VAR_NAME
 from laksyt.config.profiles import Profiles
-from tests.config.utilities import create_test_profiles
+from tests.utilities import create_test_profiles
 
 
 class TestArgs:
