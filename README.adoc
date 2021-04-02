@@ -15,6 +15,7 @@ toc::[]
 == Configure
 
 All configuration resides in the file `profiles/app-default.yml`.
+
 At the minimum, this application requires connection credentials to a Kafka instance, and a topic name to post to.
 Other preferences are set to reasonable defaults and should prove intuitive to tinker with.
 
@@ -68,5 +69,7 @@ To select a non-default profile, append `-e LAKSYT_PROFILE=<PROFILE_NAME>` to th
 
 == While running
 
-The application documents its normal activities into the standard error at the `INFO` level (which is configurable).
+The application logs its normal activities into the standard error at the `INFO` level.
+The lowest outputted log level is controlled by the configuration key `log.level`.
+
 To stop the execution, just send a `Ctrl-C`.
