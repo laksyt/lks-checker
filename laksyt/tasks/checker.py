@@ -85,6 +85,8 @@ class HealthChecker:
             report = compose_failure_report(target, error)
         except TimeoutError:
             report = compose_timeout_report(target, self._schedule.timeout)
+        except (asyncio.CancelledError, KeyboardInterrupt):
+            raise
         except BaseException:
             logger.exception(
                 "Unexpected error occurred while performing health check"
