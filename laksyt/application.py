@@ -55,6 +55,7 @@ class Application:
         )
 
     def _clean_up(self):
+        """Gracefully shut down asynchronous activity"""
         try:
             self._cancel_tasks()
             self.loop.run_until_complete(self.loop.shutdown_asyncgens())
@@ -64,6 +65,9 @@ class Application:
             self.loop.close()
 
     def _cancel_tasks(self):
+        """Make sure all asynchronous tasks that are still running are
+        cancelled and know about it
+        """
         tasks = asyncio.all_tasks(self.loop)
         if not tasks:
             self.logger.info("All tasks completed")
