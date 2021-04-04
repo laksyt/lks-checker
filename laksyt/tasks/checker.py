@@ -75,7 +75,6 @@ class HealthChecker:
             session: ClientSession
     ) -> HealthReport:
         """Performs health check against a single target and returns report"""
-        report = None
         target, matcher = target.target, target.needle_is_in
         try:
             response = await session.request(method="GET", url=target.url)
@@ -85,17 +84,7 @@ class HealthChecker:
             report = compose_failure_report(target, error)
         except TimeoutError:
             report = compose_timeout_report(target, self._schedule.timeout)
-        except (asyncio.CancelledError, KeyboardInterrupt):
-            raise
-        except BaseException:
-            logger.exception(
-                "Unexpected error occurred while performing health check"
-                f" on {target}"
-            )
-        if report:
-            logger.info(f"Health checked: {report.status:>12.12}, {report}")
-        else:
-            logger.error(f"Failed to generate health report for {target}")
+        logger.info(f"Health checked: {report.status:>12.12}, {report}")
         return report
 
     async def _do_send(self, report: HealthReport) -> bool:
@@ -104,17 +93,9 @@ class HealthChecker:
         delivery)
         """
         enqueued = False
-        kafka_producer = self._kafka_producer
-        kafka_topic = self._kafka_topic
         try:
-            kafka_producer.send(kafka_topic, report.serialize())
+            self._kafka_producer.send(self._kafka_topic, report.serialize())
             enqueued = True
         except KafkaError:
-            logger.exception(
-                f"Failed to enqueue {report} due to Kafka error"
-            )
-        except BaseException:
-            logger.exception(
-                f"Unexpected error occurred while sending {report}"
-            )
+            logger.exception(f"Failed to enqueue {report} due to Kafka error")
         return enqueued
