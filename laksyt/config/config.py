@@ -1,5 +1,4 @@
-import os
-from os.path import join
+from pathlib import Path
 from typing import Callable, Iterable
 
 import yaml
@@ -8,8 +7,6 @@ from yaml.parser import ParserError
 from laksyt.config.args import Args
 from laksyt.config.profiles import Profiles
 
-PROJECT_ROOT_DIR = join(os.path.dirname(__file__), os.pardir, os.pardir)
-
 
 class Config:
     """Encapsulates configurable parameters of the application
@@ -17,12 +14,6 @@ class Config:
     Extracts the name of active profile, then loads and parses the appropriate
     .yml configuration file.
     """
-
-    _profiles: Profiles = None
-    _args: Args = None
-
-    profile = None
-    _config: dict = None
 
     def __init__(
             self,
@@ -46,7 +37,7 @@ class Config:
         return self._config[key]
 
     @staticmethod
-    def _read_config_file(config_filepath: str) -> dict:
+    def _read_config_file(config_filepath: Path) -> dict:
         """Delegates to library to parse profile config file as YAML"""
         try:
             with open(config_filepath, "r") as config_stream:
@@ -73,7 +64,7 @@ class Config:
         try:
             for key in key_chain:
                 value = value[key]
-        except KeyError:
+        except (KeyError, TypeError):
             raise RuntimeError(
                 f"Failed to extract config value at key '{key_str}'"
                 f" from config file {self.profile.get_file_name()}"

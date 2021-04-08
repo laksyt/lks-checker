@@ -1,4 +1,4 @@
-from os.path import join
+from pathlib import Path
 
 import pytest
 
@@ -72,4 +72,4 @@ class TestProfiles:
         actual = profiles.get_config_file_path(profile)
 
         # Then
-        assert actual == join(tmpdir, test_file_name)
+        assert actual == Path(tmpdir).joinpath(test_file_name)

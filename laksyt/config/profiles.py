@@ -1,13 +1,13 @@
-import os
 from enum import Enum
 from os import listdir
-from os.path import isfile, join
+from pathlib import Path
 
 DEFAULT_PROFILE_NAME = 'default'
-PROFILE_CONFIG_DIR_PATH = 'profiles'
-PROFILE_CONFIG_FILE_NAME_PREFIX = 'app-'
-PROFILE_CONFIG_FILE_NAME_SUFFIX = '.yml'
-PROJECT_ROOT_DIR = join(os.path.dirname(__file__), os.pardir, os.pardir)
+PROFILE_DIR_NAME = 'profiles'
+PROFILE_FILE_NAME_PREFIX = 'app-'
+PROFILE_FILE_NAME_SUFFIX = '.yml'
+PROJECT_ROOT_DIR = Path(__file__).parent.parent.parent.resolve()
+CURRENT_WORK_DIR = Path.cwd().resolve()
 
 
 class Profiles:
@@ -17,19 +17,41 @@ class Profiles:
     profiles/app-<profile>.yml, where <profile> stands for the profile's name.
     To be recognized, profile's name must be a valid Python identifier.
 
-    A default profile (name defined above) must always be present.
+    Default profile (name defined at the top of this script) must always be
+    present.
     """
 
     def __init__(
             self,
-            config_dir: str = join(PROJECT_ROOT_DIR, PROFILE_CONFIG_DIR_PATH),
-            config_file_prefix: str = PROFILE_CONFIG_FILE_NAME_PREFIX,
-            config_file_suffix: str = PROFILE_CONFIG_FILE_NAME_SUFFIX
+            profile_dir: str = None,
+            profile_file_name_prefix: str = PROFILE_FILE_NAME_PREFIX,
+            profile_file_name_suffix: str = PROFILE_FILE_NAME_SUFFIX
     ):
-        self.config_dir = config_dir
-        self.config_file_prefix = config_file_prefix
-        self.config_file_suffix = config_file_suffix
+        self.profile_dir = self._detect_profile_dir(profile_dir)
+        self.profile_file_name_prefix = profile_file_name_prefix
+        self.profile_file_name_suffix = profile_file_name_suffix
         self.Profile = self._generate_profile_enum()
+
+    @staticmethod
+    def _detect_profile_dir(explicit: str = None) -> Path:
+        """Decides where to look for profile config files"""
+        if explicit is not None:
+            explicit = Path(explicit)
+            if explicit.is_dir():
+                return explicit
+            raise RuntimeError(
+                f"Explicitly given config directory {explicit} does not exist"
+            )
+        in_cwd = CURRENT_WORK_DIR.joinpath(PROFILE_DIR_NAME)
+        if in_cwd.is_dir():
+            return in_cwd
+        in_root = PROJECT_ROOT_DIR.joinpath(PROFILE_DIR_NAME)
+        if in_root.is_dir():
+            return in_root
+        raise RuntimeError(
+            "Failed to detect config directory at following locations:"
+            f" {', '.join({str(in_cwd), str(in_root)})}"
+        )
 
     def _generate_profile_enum(self) -> Enum:
         """Generates Profile enum and adds convenience methods to it"""
@@ -50,25 +72,27 @@ class Profiles:
         profile is present, returns the full list
         """
         try:
-            profile_names = self._scan_dir_for_pattern(
-                self.config_dir,
-                self.config_file_prefix,
-                self.config_file_suffix
-            )
+            profile_names = [
+                profile_name
+                for profile_name in self._scan_dir_for_pattern(
+                    self.profile_dir,
+                    self.profile_file_name_prefix,
+                    self.profile_file_name_suffix
+                ) if profile_name.isidentifier()
+            ]
         except IOError:
             raise RuntimeError(
-                "Failed to read profile config files"
-                f" in directory '{PROFILE_CONFIG_DIR_PATH}'"
+                f"Failed to read profile config files in {self.profile_dir}"
             )
         if DEFAULT_PROFILE_NAME not in profile_names:
             raise RuntimeError(
                 "Failed to detect config file for default profile"
-                f" named '{DEFAULT_PROFILE_NAME}'"
+                f" '{DEFAULT_PROFILE_NAME}' in {self.profile_dir}"
             )
         return profile_names
 
     @staticmethod
-    def _scan_dir_for_pattern(dir_path: str, prefix: str, suffix: str) \
+    def _scan_dir_for_pattern(dir_path: Path, prefix: str, suffix: str) \
             -> list[str]:
         """Scans directory for files named with given prefix & suffix, strips
         both, and returns the remainders of file names in a list
@@ -76,21 +100,19 @@ class Profiles:
         return [
             filename[len(prefix):len(filename) - len(suffix)]
             for filename in listdir(dir_path)
-            if isfile(join(dir_path, filename))
+            if dir_path.joinpath(filename).is_file()
             if len(filename) > len(prefix) + len(suffix)
             if filename.startswith(prefix)
             if filename.endswith(suffix)
         ]
 
     def get_config_file_name(self, profile):
-        return f"{self.config_file_prefix}" \
+        return f"{self.profile_file_name_prefix}" \
                f"{profile.value}" \
-               f"{self.config_file_suffix}"
+               f"{self.profile_file_name_suffix}"
 
-    def get_config_file_path(self, profile):
-        return join(
-            self.config_dir, self.get_config_file_name(profile)
-        )
+    def get_config_file_path(self, profile) -> Path:
+        return self.profile_dir.joinpath(self.get_config_file_name(profile))
 
     def get_by_name(self, name: str):
         return self.Profile(name)

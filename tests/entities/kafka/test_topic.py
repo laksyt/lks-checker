@@ -17,7 +17,7 @@ kafka:
         )
 
         # When
-        topic: str = get_kafka_topic(Config(Profiles(config_dir=tmpdir)))
+        topic: str = get_kafka_topic(Config(Profiles(profile_dir=tmpdir)))
 
         # Then
         assert topic == 'test-topic'

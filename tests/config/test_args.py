@@ -11,7 +11,7 @@ class TestArgs:
     def test_default_profile(self, monkeypatch, tmpdir):
         # Given
         create_test_profiles(tmpdir)
-        profiles = Profiles(config_dir=tmpdir)
+        profiles = Profiles(profile_dir=tmpdir)
         monkeypatch.delenv(name=PROFILE_ENV_VAR_NAME, raising=False)
 
         # When
@@ -23,7 +23,7 @@ class TestArgs:
     def test_profile_from_env(self, monkeypatch, tmpdir):
         # Given
         create_test_profiles(tmpdir)
-        profiles = Profiles(config_dir=tmpdir)
+        profiles = Profiles(profile_dir=tmpdir)
         monkeypatch.setenv(name=PROFILE_ENV_VAR_NAME, value='uat')
 
         # When
@@ -35,7 +35,7 @@ class TestArgs:
     def test_profile_from_cli(self, monkeypatch, tmpdir):
         # Given
         create_test_profiles(tmpdir)
-        profiles = Profiles(config_dir=tmpdir)
+        profiles = Profiles(profile_dir=tmpdir)
         monkeypatch.delenv(name=PROFILE_ENV_VAR_NAME, raising=False)
 
         # When
@@ -47,7 +47,7 @@ class TestArgs:
     def test_profile_from_env_and_cli(self, monkeypatch, tmpdir):
         # Given
         create_test_profiles(tmpdir)
-        profiles = Profiles(config_dir=tmpdir)
+        profiles = Profiles(profile_dir=tmpdir)
         monkeypatch.setenv(name=PROFILE_ENV_VAR_NAME, value='uat')
 
         # When
@@ -60,7 +60,7 @@ class TestArgs:
         with pytest.raises(RuntimeError):
             # Given
             create_test_profiles(tmpdir)
-            profiles = Profiles(config_dir=tmpdir)
+            profiles = Profiles(profile_dir=tmpdir)
             monkeypatch.setenv(name=PROFILE_ENV_VAR_NAME, value='mumbo')
 
             # When
@@ -71,7 +71,7 @@ class TestArgs:
     def test_bad_profile_from_env_overridden(self, monkeypatch, tmpdir):
         # Given
         create_test_profiles(tmpdir)
-        profiles = Profiles(config_dir=tmpdir)
+        profiles = Profiles(profile_dir=tmpdir)
         monkeypatch.setenv(name=PROFILE_ENV_VAR_NAME, value='mumbo')
 
         # When
@@ -84,7 +84,7 @@ class TestArgs:
         with pytest.raises(SystemExit):
             # Given
             create_test_profiles(tmpdir)
-            profiles = Profiles(config_dir=tmpdir)
+            profiles = Profiles(profile_dir=tmpdir)
             monkeypatch.delenv(name=PROFILE_ENV_VAR_NAME, raising=False)
 
             # When
@@ -96,7 +96,7 @@ class TestArgs:
         with pytest.raises(SystemExit):
             # Given
             create_test_profiles(tmpdir)
-            profiles = Profiles(config_dir=tmpdir)
+            profiles = Profiles(profile_dir=tmpdir)
             monkeypatch.setenv(name=PROFILE_ENV_VAR_NAME, value='uat')
 
             # When

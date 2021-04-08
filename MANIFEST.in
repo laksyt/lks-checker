@@ -1,0 +1,10 @@
+include .gitignore
+include Dockerfile
+include LICENSE
+include Pipfile
+include Pipfile.lock
+include pyproject.toml
+include README.md
+
+recursive-include profiles *.yml
+recursive-exclude profiles app-local.yml

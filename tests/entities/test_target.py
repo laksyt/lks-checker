@@ -22,7 +22,7 @@ checking:
 
         # When
         targets: tuple[TargetWrapper] = get_targets(
-            Config(Profiles(config_dir=tmpdir))
+            Config(Profiles(profile_dir=tmpdir))
         )
 
         # Then
@@ -47,7 +47,7 @@ checking:
             '''
         )
         targets: tuple[TargetWrapper] = get_targets(
-            Config(Profiles(config_dir=tmpdir))
+            Config(Profiles(profile_dir=tmpdir))
         )
         target, = targets
 

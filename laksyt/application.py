@@ -25,6 +25,10 @@ class Application:
         self.config = config
         self.loop = asyncio.get_event_loop()
 
+        self.logger.info(
+            f"Active profile: {self.config.profile.get_file_path()}"
+        )
+
         self.uptime_reporter = UptimeReporter()
         self.health_checker = HealthChecker(
             get_targets(config),

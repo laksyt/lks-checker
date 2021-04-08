@@ -21,7 +21,7 @@ class TestConfig:
         )
 
         # When
-        config = Config(Profiles(config_dir=tmpdir))
+        config = Config(Profiles(profile_dir=tmpdir))
 
         # Then
         assert config['key'] == 'value'
@@ -35,7 +35,7 @@ class TestConfig:
         )
 
         # When
-        config = Config(Profiles(config_dir=tmpdir))
+        config = Config(Profiles(profile_dir=tmpdir))
 
         # Then
         assert config['key']['sub'] == 'value'
@@ -49,7 +49,7 @@ class TestConfig:
         )
 
         # When
-        config = Config(Profiles(config_dir=tmpdir))
+        config = Config(Profiles(profile_dir=tmpdir))
 
         # Then
         assert config['key.sub'] == 'value'
